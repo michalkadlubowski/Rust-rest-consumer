@@ -1,7 +1,10 @@
 mod github_client;
 mod github;
 
+use std::env;
+
 use clap::{App, Arg};
+use futures::StreamExt;
 
 use crate::github_client::GithubClient;
 
@@ -14,7 +17,7 @@ async fn main() {
                     .short("l")
                     .long("language")
                     .required(true)
-                    .help("Sets programming language")
+                    .help("Programming language")
                     .takes_value(true))
                 .arg(Arg::with_name("COUNT")
                     .short("c")
@@ -26,15 +29,12 @@ async fn main() {
     // TODO handle bad input better                
     let lang = x.value_of("LANG").unwrap();
     let count = x.value_of("COUNT").unwrap().parse::<i32>().unwrap();
-
-    // TODO token
-    let token = "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";
+    let token =  env::var("gh_token").unwrap();
     
-    println!("Lang: {} count {}", lang, count);
-
     let client = GithubClient::new(token.to_string());
-    let res  = client.get_contributors(&lang, count as usize).await;
-    for i in &res {
+
+    let mut res  = Box::pin(client.get_contributors(&lang, count as usize));
+    while let Some(i) = res.next().await {
         println!("project: {0: <20} user: {1: <20} percentage: {2: <10}", i.repo, i.username, i.percentage);
     }
 }

@@ -12,6 +12,7 @@ use crate::github_client::GithubClient;
 async fn main() {
     let x = App::new("rust-rest-client-example")
                 .version("1.0")
+                .after_help("USE \"gh_token\" ENV VARIABLE TO PASS GITHUB ACCESS TOKEN")
                 .author("Michał Kadłubowski")
                 .arg(Arg::with_name("LANG")
                     .short("l")
@@ -26,6 +27,7 @@ async fn main() {
                     .required(true)
                     .takes_value(true))
                 .get_matches();
+
     // TODO handle bad input better                
     let lang = x.value_of("LANG").unwrap();
     let count = x.value_of("COUNT").unwrap().parse::<i32>().unwrap();

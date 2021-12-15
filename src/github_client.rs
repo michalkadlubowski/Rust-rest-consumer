@@ -72,7 +72,8 @@ impl GithubClient {
             .await
             .map_err(|_x| ApiError("Error calling API".to_owned()))?;
 
-        //println!("Calling for 25 cotntributors Res: {}", response.status());
+        // println!("Calling for 25 cotntributors Res: {}", response.status());
+
         if response.status() != StatusCode::OK {
             return Err(ApiError(format!(
                 "Error calling API - response code: {}",
@@ -111,6 +112,7 @@ impl GithubClient {
             .map_err(|_x| ApiError("Error calling API".to_owned()))?;
 
         //println!("Calling for page: {}", response.status());
+        
         if response.status() != StatusCode::OK {
             return Err(ApiError(format!(
                 "Error calling API - response code: {}",

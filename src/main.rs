@@ -30,12 +30,12 @@ async fn main() {
 
     // Validated by clap so unwrap is mostly ok
     let lang = arg_matches.value_of("LANG").unwrap();
-    let count = arg_matches.value_of("COUNT").unwrap().parse::<i32>().unwrap();
+    let count = arg_matches.value_of("COUNT").unwrap().parse::<usize>().unwrap();
     let token =  env::var("gh_token").ok();
     
     let client = GithubClient::new(token);
 
-    let mut res  = Box::pin(client.get_contributors(&lang, count as usize));
+    let mut res  = Box::pin(client.get_contributors(&lang, count));
     while let Some(i) = res.next().await {
         match i {
             Ok(result ) => println!("project: {0: <20} user: {1: <20} percentage: {2: <10}", result.repo, result.username, result.percentage),
